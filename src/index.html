@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>System Status</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    body,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family: "Lato", sans-serif
+    }
+
+    .w3-bar,
+    h1,
+    button {
+      font-family: "Montserrat", sans-serif
+    }
+
+    .fa-anchor,
+    .fa-coffee {
+      font-size: 200px
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="w3-top">
+    <div class="w3-bar w3-sand w3-card w3-left-align w3-large">
+      <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-red"
+        href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+      <a id="home-tab" href="#" class="w3-bar-item w3-button w3-padding-large w3-white" onclick="setActiveTab('home-tab')">Home</a>
+      <a id="gnss-tab" href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" onclick="setActiveTab('gnss-tab')">GNSS Nav</a>
+      <a id="system-tab" href="javascript:void(0);" onclick="loadSystemContent()" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">System</a>
+      <a id="time-tab" href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" onclick="setActiveTab('time-tab')">Time Domain</a>
+    </div>
+
+    <!-- Navbar on small screens -->
+    <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
+      <a id="home-tab-small" href="/" class="w3-bar-item w3-button w3-padding-large" onclick="setActiveTab('home-tab-small')">Home</a>
+      <a id="gnss-tab-small" href="#" class="w3-bar-item w3-button w3-padding-large" onclick="setActiveTab('gnss-tab-small')">GNSS Nav</a>
+      <a id="system-tab-small" href="javascript:void(0);" onclick="loadSystemContent()" class="w3-bar-item w3-button w3-padding-large">System</a>
+      <a id="time-tab-small" href="#" class="w3-bar-item w3-button w3-padding-large" onclick="setActiveTab('time-tab-small')">Time Domain</a>
+    </div>
+  </div>
+
+  <!-- Content Container -->
+  <div id="content" class="w3-container" style="margin-top:50px">
+    <h1>Welcome to the System Status Page</h1>
+    <p>Select a tab to view content.</p>
+  </div>
+
+  <script>
+    function setActiveTab(tabId) {
+      const suffix = tabId.split('-').slice(1).join('-');
+      const tabs = document.querySelectorAll(`[id$="${suffix}"]`);
+      console.log(tabs);
+      tabs.forEach(tab => {
+      tab.classList.remove('w3-white');
+      });
+      const tab = document.getElementById(tabId);
+      if (tab !== null) {
+      tab.classList.add('w3-white');
+      }
+    }
+
+    function loadSystemContent() {
+      fetch('/system')
+      .then(response => response.text())
+      .then(html => {
+      const contentDiv = document.getElementById('content');
+      contentDiv.innerHTML = html;
+      executeScripts(contentDiv);
+      setActiveTab('system-tab');
+      setActiveTab('system-tab-small');
+      })
+      .catch(error => {
+      console.error('Error loading system content:', error);
+      });
+    }
+
+    function executeScripts(element) {
+      const scripts = element.getElementsByTagName('script');
+      for (let i = 0; i < scripts.length; i++) {
+        const script = document.createElement('script');
+        script.text = scripts[i].text;
+        document.head.appendChild(script).parentNode.removeChild(script);
+      }
+    }
+
+    function myFunction() {
+      var x = document.getElementById("navDemo");
+      if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+      } else {
+        x.className = x.className.replace(" w3-show", "");
+      }
+    }
+  </script>
+</body>
+</html>

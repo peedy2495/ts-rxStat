@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>System Status</title>
+</head>
+<body>
+</div>
+  <h1>System Status</h1>
+  <p>Stream: <span id="stream">Loading...</span></p>
+  <p>Receiver: <span id="receiver">Loading...</span></p>
+  <p>Status LEDs: <span id="statusLEDs">Loading...</span></p>
+  <p>Up Time: <span id="upTime">Loading...</span></p>
+
+  <script>
+    async function fetchSystemStatus() {
+      try {
+        const response = await fetch('/api/system');
+        const data = await response.json();
+        document.getElementById('stream').innerText = data.stream;
+        document.getElementById('receiver').innerText = data.receiver;
+        document.getElementById('statusLEDs').innerText = data.statusLEDs;
+        document.getElementById('upTime').innerText = data.upTime;
+      } catch (error) {
+        console.error('Error fetching system status:', error);
+      }
+    }
+
+    // Fetch system status every 500 miliseconds
+    setInterval(fetchSystemStatus, 500);
+
+    // Initial fetch
+    fetchSystemStatus();
+  </script>
+</body>
+</html>
